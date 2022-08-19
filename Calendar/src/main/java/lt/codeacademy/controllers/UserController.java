@@ -17,10 +17,10 @@ public class UserController {
 
 	@PostMapping("/register")
 	public String register() {
-		
+
 		return "register";
 	}
-	
+
 	@GetMapping("/home")
 	public String home() {
 		return "home";
