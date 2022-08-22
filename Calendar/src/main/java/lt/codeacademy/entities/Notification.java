@@ -11,6 +11,10 @@ public class Notification {
 	long id;
 
 	String content;
+	
+	@ManyToOne
+    @JoinColumn(name="day_id", nullable=false)
+	Day day;
 
 	public enum Type {
 		WORK, STUDIES, EVENT, BIRTHDAY, HOLIDAY, CUSTOM

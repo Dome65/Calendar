@@ -2,7 +2,6 @@ package lt.codeacademy.entities;
 
 import java.time.*;
 import java.util.*;
-
 import javax.persistence.*;
 
 @Entity
@@ -18,7 +17,7 @@ public class Day {
 	LocalTime time;
 	LocalDate date;
 	
-	@OneToMany
+	@OneToMany(mappedBy="day")
 	Set<Notification> notifications;
 
 	public long getId() {
