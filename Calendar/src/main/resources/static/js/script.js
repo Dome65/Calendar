@@ -130,15 +130,16 @@ for (let j = 1; j <= nextDays; j++) {
 }
 monthDays.innerHTML = days;
 
+//mygtukas perjungt praeita menesi
 document.querySelector(".prev").addEventListener("click", () => {
 	date.setMonth(date.getMonth() - 1);
 	renderCalendar();
 });
 
+//mygtukas perjungt sekanti menesi
 document.querySelector(".next").addEventListener("click", () => {
 	date.setMonth(date.getMonth() + 1);
 	renderCalendar();
 });
 
 renderCalendar();
-//

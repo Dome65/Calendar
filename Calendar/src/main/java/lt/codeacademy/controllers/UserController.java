@@ -25,4 +25,9 @@ public class UserController {
 	public String home() {
 		return "home";
 	}
+	
+	@GetMapping("/index")
+	public String calendar() {
+		return "index";
+	}
 }
