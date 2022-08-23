@@ -49,17 +49,9 @@ public class User {
 		this.email = email;
 	}
 
-	public int getAge() {
-		return age;
-	}
-
-	public void setAge(int age) {
-		this.age = age;
-	}
-
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", userName=" + userName + ", email=" + email + ", age=" + age + "]";
+		return "User [id=" + id + ", userName=" + userName + ", email=" + email + ", password=" + password + "]";
 	}
 
 }

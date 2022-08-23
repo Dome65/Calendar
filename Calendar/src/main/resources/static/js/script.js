@@ -47,21 +47,21 @@ const renderCalendar = () => {
 
 	//praeito menesio dienos
 	for (let x = firstDayIndex; x > 0; x--) {
-		days += `<div class="prev-date">${prevLastDay - x + 1}</div>`;
+		days += `<button class="prev-date">${prevLastDay - x + 1}</button>`;
 	}
 
-	// dienu rodymas
+	// dienu rodymas P.S. 
 	for (let i = 1; i <= lastDay; i++) {
 		if (i === new Date().getDate() && date.getMonth() === new Date().getMonth()) {
-			days += `<div class="today">${i}</div>`;
+			days += `<button onclick="location.href = '/user/home';" id="myButton" class="today" >${i}</button>`;
 		} else {
-			days += `<div>${i}</div>`; // ne ' o ` ISIMINK SITA
+			days += `<button onclick="location.href = '/user/home';" id="myButton">${i}</button>`; // ne ' o ` ISIMINK SITA
 		}
 	}
 
 	//sekancio menesio dienos
 	for (let j = 1; j <= nextDays; j++) {
-		days += `<div class="next-date">${j}</div>`;
+		days += `<button class="next-date">${j}</button>`;
 	}
 	monthDays.innerHTML = days;
 
