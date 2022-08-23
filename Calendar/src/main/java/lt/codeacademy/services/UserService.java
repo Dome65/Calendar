@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import lt.codeacademy.entities.User;
+import lt.codeacademy.models.User;
 import lt.codeacademy.repositories.UserRepo;
 
 

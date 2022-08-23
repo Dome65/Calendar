@@ -1,4 +1,4 @@
-package lt.codeacademy.entities;
+package lt.codeacademy.models;
 
 import java.time.*;
 import java.util.*;

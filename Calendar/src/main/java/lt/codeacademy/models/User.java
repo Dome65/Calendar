@@ -1,4 +1,4 @@
-package lt.codeacademy.entities;
+package lt.codeacademy.models;
 
 import javax.persistence.*;
 
@@ -12,17 +12,17 @@ public class User {
 
 	String userName;
 	String email;
-	int age;
+	String password;
 
 	public User() {
 		super();
 	}
 
-	public User(String userName, String email, int age) {
+	public User(String userName, String email, String password) {
 		super();
 		this.userName = userName;
 		this.email = email;
-		this.age = age;
+		this.password = password;
 	}
 
 	public long getId() {

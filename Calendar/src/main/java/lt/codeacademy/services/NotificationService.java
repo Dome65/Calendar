@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import lt.codeacademy.entities.Notification;
+import lt.codeacademy.models.Notification;
 import lt.codeacademy.repositories.NotificationRepo;
 
 @Service
@@ -29,4 +29,8 @@ public class NotificationService {
 	public Optional<Notification> findById(long id) {
 		return notificationRepo.findById(id);
 	}
+	
+	
+	
+	
 }
