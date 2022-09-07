@@ -4,6 +4,7 @@ import java.time.LocalTime;
 
 import javax.persistence.*;
 
+
 @Entity
 @Table(name = "notifications")
 public class Notification {
