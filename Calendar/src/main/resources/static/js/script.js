@@ -50,12 +50,12 @@ const renderCalendar = () => {
 		days += `<button class="prev-date">${prevLastDay - x + 1}</button>`;
 	}
 
-	// dienu rodymas P.S. 
+	// dienu rodymas 
 	for (let i = 1; i <= lastDay; i++) {
 		if (i === new Date().getDate() && date.getMonth() === new Date().getMonth()) {
-			days += `<button onclick="location.href = '/user/home';" id="myButton" class="today" >${i}</button>`;
+			days += `<button onclick="location.href = '/user/signup';" class="today">${i}</button></a>`;
 		} else {
-			days += `<button onclick="location.href = '/user/home';" id="myButton">${i}</button>`; // ne ' o ` ISIMINK SITA
+			days += `<button onclick="location.href = '/user/signup';">${i}</button>`; // ne ' o ` ISIMINK SITA
 		}
 	}
 
@@ -142,4 +142,7 @@ document.querySelector(".next").addEventListener("click", () => {
 	renderCalendar();
 });
 
+
+
 renderCalendar();
+

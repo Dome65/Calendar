@@ -1,23 +1,33 @@
 package lt.codeacademy.models;
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.persistence.*;
 
 @Entity
 @Table(name = "days")
 public class Day {
-	
-	//gali prireikt DateTimeFormatter, tureti omenyje
-	
+
+	// gali prireikt DateTimeFormatter, tureti omenyje
+
+	@Transient // ziauriai geras dalykelis - @Entity ignoruoja situs fieldus
+	String datePattern = "yyyy.MM.dd";
+	@Transient
+	String timePattern = "HH:mm";
+	@Transient
+	DateTimeFormatter dateForm = DateTimeFormatter.ofPattern(datePattern);
+	@Transient
+	DateTimeFormatter timeForm = DateTimeFormatter.ofPattern(timePattern);
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	long id;
-	
+
 	LocalTime time;
 	LocalDate date;
-	
-	@OneToMany(mappedBy="day")
+
+	@OneToMany(mappedBy = "day")
 	Set<Notification> notifications;
 
 	public long getId() {
@@ -65,12 +75,8 @@ public class Day {
 
 	@Override
 	public String toString() {
-		return "Day [id=" + id + ", time=" + time + ", date=" + date + ", notifications=" + notifications + "]";
+		return "Day [id=" + id + ", time=" + timeForm.format(time) + ", date=" + dateForm.format(date)
+				+ ", notifications=" + notifications + "]";
 	}
-	
-	
-	
-	
-	
-	
+
 }
