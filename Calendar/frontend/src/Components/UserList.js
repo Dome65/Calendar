@@ -52,9 +52,7 @@ const UserList = () => {
 		return <tr key={user.id}>
 			<td style={{ whiteSpace: 'nowrap' }}>{user.userName}</td>
 			<td>{user.email}</td>
-			<td>{notifications.map(notification => {
-				return <div key={notification.userId}> {notification.user.notifications}</div>
-			})}</td>
+			<td>{user.notifications.map(notification => <li key={notification.name}>{notification.name}</li>)}</td>
 			<td>
 				<ButtonGroup>
 					<Button size="sm" color="primary" tag={Link} to={"/users/" + user.id}>Edit</Button>
