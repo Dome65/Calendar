@@ -50,10 +50,11 @@ const UserList = () => {
 	const userList = users.map(user => {
 
 		return <tr key={user.id}>
+		
 			<td style={{ whiteSpace: 'nowrap' }}>{user.userName}</td>
 			<td>{user.email}</td>
 			<td>{notifications.map(notification => {
-				return <div key={notification.userId}> {notification.user.notifications}</div>
+				return <div key={notification.userId}> {notification.user.userName}</div>
 			})}</td>
 			<td>
 				<ButtonGroup>
