@@ -1,80 +1,71 @@
 package lt.codeacademy.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.Optional;
 
-import lt.codeacademy.models.Notification;
+import javax.validation.Valid;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import lt.codeacademy.models.User;
 import lt.codeacademy.repositories.UserRepo;
-import lt.codeacademy.services.NotificationService;
 
-@Controller
-@RequestMapping(path = "/user")
+@RestController
+@RequestMapping(path = "/api")
+@CrossOrigin(origins = "http://localhost:3000/")
 public class UserController {
 
-	@Autowired
-	UserRepo userRepo;
+	private final Logger log = LoggerFactory.getLogger(UserController.class);
+	private UserRepo userRepo;
 
-	@Autowired
-	private NotificationService notificationService;
-
-	@PostMapping("/index")
-	public String showUserList(Model model) {
-		model.addAttribute("notifications", notificationService.findAll());
-		return "home";
+	public UserController(UserRepo userRepo) {
+		this.userRepo = userRepo;
 	}
 
-	@GetMapping("/signup")
-	public String showSignUpForm(Notification notification) {
-		return "add-notification";
+	@GetMapping("/users")
+	Collection<User> users() {
+		return userRepo.findAll();
 	}
 
-	@GetMapping("/addnotification")
-	public String addNotification(@Validated Notification notification, BindingResult result, Model model) {
-		if (result.hasErrors()) {
-			return "add-notification";
-		}
-
-		notificationService.save(notification);
-		return "redirect:/index";
+	@GetMapping("/user/{id}")
+	ResponseEntity<?> getUser(@PathVariable Long id) {
+		Optional<User> notification = userRepo.findById(id);
+		return notification.map(response -> ResponseEntity.ok().body(response))
+				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
-	@GetMapping("/edit/{id}")
-	public String showUpdateForm(@PathVariable("id") long id, Model model) {
-		Notification notification = notificationService.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-		model.addAttribute("notification", notification);
+//	//cia pagal varda padaryt
+//	@GetMapping("/userByName/{userName}")
+//	ResponseEntity<?> getUserByName(@PathVariable String userName) {
+//		Optional<User> notification = userRepo.findBy(null, null);
+//		return notification.map(response -> ResponseEntity.ok().body(response))
+//				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+//	}
 
-		return "update-user";
+	@PostMapping("/user")
+	ResponseEntity<User> createUser(@Valid @RequestBody User user) throws URISyntaxException {
+		log.info("Request to create user: {}", user);
+		User result = userRepo.save(user);
+		return ResponseEntity.created(new URI("/api/user/" + result.getId())).body(result);
 	}
 
-	@PostMapping("/update/{id}")
-	public String updateUser(@PathVariable("id") long id, @Validated Notification notification, BindingResult result,
-			Model model) {
-		if (result.hasErrors()) {
-			notification.setId(id);
-			return "update-user";
-		}
-
-		notificationService.save(notification);
-
-		return "redirect:/index";
+	@PutMapping("/user/{id}")
+	ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
+		log.info("Request to update user: {}", user);
+		User result = userRepo.save(user);
+		return ResponseEntity.ok().body(result);
 	}
 
-	@GetMapping("/delete/{id}")
-	public String deleteUser(@PathVariable("id") long id, Model model) {
-		Notification notification = notificationService.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
-		notificationService.delete(notification);
-
-		return "redirect:/index";
-
+	@DeleteMapping(value = "/user/{id}")
+	public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
+		log.info("Request to delete user: {}", id);
+		userRepo.deleteById(id);
+		return ResponseEntity.ok().build();
 	}
-
 }
