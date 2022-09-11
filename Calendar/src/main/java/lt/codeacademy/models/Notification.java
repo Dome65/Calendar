@@ -48,5 +48,10 @@ public class Notification {
 	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private User user;
 
+	public void notifyUsers() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }
