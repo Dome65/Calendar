@@ -50,6 +50,7 @@ const UserList = () => {
 	const userList = users.map(user => {
 
 		return <tr key={user.id}>
+			<td>{user.id}</td>
 			<td style={{ whiteSpace: 'nowrap' }}>{user.userName}</td>
 			<td>{user.email}</td>
 			<td>{user.notifications.map(notification => <li key={notification.name}>{notification.name}</li>)}</td>
@@ -73,10 +74,11 @@ const UserList = () => {
 				<Table className="mt-4">
 					<thead>
 						<tr>
-							<th width="20%">Name</th>
-							<th width="20%">Email</th>
+							<th>UserId</th>
+							<th>Name</th>
+							<th>Email</th>
 							<th>Notifications</th>
-							<th width="10%">Actions</th>
+							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>

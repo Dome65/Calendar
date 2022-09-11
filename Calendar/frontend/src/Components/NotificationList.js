@@ -4,23 +4,18 @@ import AppNavbar from './AppNavbar';
 import { Link } from 'react-router-dom';
 import axios from "axios";
 
-const UserList = () => {
+const NotificationList = () => {
 
-	const [users, setUsers] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [notifications, setNotifications] = useState([]);
 
 	const fetchData = () => {
-		const usersUrl = '/api/users';
 		const notificationsUrl = '/api/notifications';
-		const getUsers = axios.get(usersUrl)
 		const getNotifications = axios.get(notificationsUrl)
-		axios.all([getUsers, getNotifications]).then(
+		axios.all([getNotifications, getNotifications]).then(
 			axios.spread((...allData) => {
-				const allUserData = allData[0].data
-				const allNotificationData = allData[1].data
+				const allNotificationData = allData[0].data
 
-				setUsers(allUserData)
 				setNotifications(allNotificationData)
 			})
 		)
@@ -31,15 +26,15 @@ const UserList = () => {
 
 
 	const remove = async (id) => {
-		await fetch(`/api/user/${id}`, {
+		await fetch(`/api/notification/${id}`, {
 			method: 'DELETE',
 			headers: {
 				'Accept': 'application/json',
 				'Content-Type': 'application/json'
 			}
 		}).then(() => {
-			let updatedUsers = [...users].filter(i => i.id !== id);
-			setUsers(updatedUsers);
+			let updatedNotifications = [...notifications].filter(i => i.id !== id);
+			setNotifications(updatedNotifications);
 		});
 	}
 
@@ -47,19 +42,18 @@ const UserList = () => {
 		return <p>Loading...</p>;
 	}
 
-	const userList = users.map(user => {
+	const notificationList = notifications.map(notification => {
 
-		return <tr key={user.id}>
-		
-			<td style={{ whiteSpace: 'nowrap' }}>{user.userName}</td>
-			<td>{user.email}</td>
-			<td>{notifications.map(notification => {
-				return <div key={notification.userId}> {notification.user.userName}</div>
-			})}</td>
+		return <tr key={notification.id}>
+			<td style={{ whiteSpace: 'nowrap' }}>{notification.userId}</td>
+			<td>{notification.name}</td>
+			<td>{notification.content}</td>
+			<td>{notification.time}</td>
+			<td>{notification.date}</td>
 			<td>
 				<ButtonGroup>
-					<Button size="sm" color="primary" tag={Link} to={"/users/" + user.id}>Edit</Button>
-					<Button size="sm" color="danger" onClick={() => remove(user.id)}>Delete</Button>
+					<Button size="sm" color="primary" tag={Link} to={"/notifications/" + notification.id}>Edit</Button>
+					<Button size="sm" color="danger" onClick={() => remove(notification.id)}>Delete</Button>
 				</ButtonGroup>
 			</td>
 		</tr >
@@ -70,20 +64,22 @@ const UserList = () => {
 			<AppNavbar />
 			<Container fluid>
 				<div className="float-end">
-					<Button color="success" tag={Link} to="/users/new">Add User</Button>
+					<Button color="success" tag={Link} to="/notifications/new">Add Notification</Button>
 				</div>
-				<h3>My Users</h3>
+				<h3>My Notifications</h3>
 				<Table className="mt-4">
 					<thead>
 						<tr>
-							<th width="20%">Name</th>
-							<th width="20%">Email</th>
-							<th>Notifications</th>
+							<th>UserId</th>
+							<th>Name</th>
+							<th>Content</th>
+							<th>Time</th>
+							<th>Date</th>
 							<th width="10%">Actions</th>
 						</tr>
 					</thead>
 					<tbody>
-						{userList}
+						{notificationList}
 					</tbody>
 				</Table>
 			</Container>
@@ -91,4 +87,4 @@ const UserList = () => {
 	);
 };
 
-export default UserList;
+export default NotificationList;
