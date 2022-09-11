@@ -7,8 +7,7 @@ const NotificationEdit = () => {
 	const initialFormState = {
 		name: '',
 		content: '',
-		time: '',
-		date: '',
+		dateTime: '',
 		userId: '',
 
 	};
@@ -62,15 +61,11 @@ const NotificationEdit = () => {
 					<Input type="text" name="content" id="content" value={notification.content || ''}
 						onChange={handleChange} autoComplete="content" />
 				</FormGroup>
+
 				<FormGroup>
-					<Label for="time">Time</Label>
-					<Input type="time" name="time" id="time" value={notification.time || ''}
-						onChange={handleChange} autoComplete="time" />
-				</FormGroup>
-				<FormGroup>
-					<Label for="date">Date</Label>
-					<Input type="date" name="date" id="date" value={notification.date || ''}
-						onChange={handleChange} autoComplete="date" />
+					<Label for="dateTime">Date</Label>
+					<Input type="datetime-local" name="dateTime" id="dateTime" value={notification.dateTime || ''}
+						onChange={handleChange} autoComplete="dateTime" />
 				</FormGroup>
 				<FormGroup>
 					<Label for="userId">UserId</Label>

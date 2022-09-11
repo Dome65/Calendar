@@ -1,6 +1,8 @@
 package lt.codeacademy.models;
 
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import javax.persistence.*;
@@ -21,7 +23,12 @@ import lombok.NonNull;
 @Entity
 @Transactional
 @Table(name = "notifications")
-public class Notification {
+public class Notification implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,29 +36,27 @@ public class Notification {
 
 	@NonNull
 	String content;
-
+	
 	@NonNull
 	String name;
 
 	@NonNull
-	LocalTime time;
-
-	@NonNull
-	LocalDate date;
+	LocalDateTime dateTime;
 
 	@Column(name = "user_id", nullable = false)
 	private Long userId;
 
+	@Column(name = "user_email", nullable = false)
+	private String userEmail;
+
 	// It is only for foreign key.
+
 	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumns(value = {
+			@JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false),
+			@JoinColumn(name = "user_email", referencedColumnName = "email", insertable = false, updatable = false) 
+			})
 	private User user;
 
-	public void notifyUsers() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
 }
