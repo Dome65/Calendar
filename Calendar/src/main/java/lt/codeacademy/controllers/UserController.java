@@ -40,14 +40,6 @@ public class UserController {
 				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
-//	//cia pagal varda padaryt
-//	@GetMapping("/userByName/{userName}")
-//	ResponseEntity<?> getUserByName(@PathVariable String userName) {
-//		Optional<User> notification = userRepo.findBy(null, null);
-//		return notification.map(response -> ResponseEntity.ok().body(response))
-//				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-//	}
-
 	@PostMapping("/user")
 	ResponseEntity<User> createUser(@Valid @RequestBody User user) throws URISyntaxException {
 		log.info("Request to create user: {}", user);

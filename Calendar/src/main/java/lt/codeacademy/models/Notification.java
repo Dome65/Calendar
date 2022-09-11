@@ -4,9 +4,11 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -48,6 +50,10 @@ public class Notification implements Serializable{
 
 	@Column(name = "user_email", nullable = false)
 	private String userEmail;
+	
+	@NotNull
+	@Builder.Default
+	private ZoneId timeZone = ZoneId.systemDefault();
 
 	// It is only for foreign key.
 

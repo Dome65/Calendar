@@ -9,6 +9,7 @@ const NotificationEdit = () => {
 		content: '',
 		dateTime: '',
 		userId: '',
+		userEmail: '',
 
 	};
 	const [notification, setNotification] = useState(initialFormState);
@@ -31,6 +32,15 @@ const NotificationEdit = () => {
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+
+		await fetch('/scheduleEmail', {
+			method: 'POST',
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(notification)
+		})
 
 		await fetch('/api/notification' + (notification.id ? '/' + notification.id : ''), {
 			method: (notification.id) ? 'PUT' : 'POST',
@@ -71,6 +81,11 @@ const NotificationEdit = () => {
 					<Label for="userId">UserId</Label>
 					<Input type="text" name="userId" id="userId" value={notification.userId || ''}
 						onChange={handleChange} autoComplete="userId" />
+				</FormGroup>
+				<FormGroup>
+					<Label for="userEmail">UserEmail</Label>
+					<Input type="email" name="userEmail" id="userEmail" value={notification.userEmail || ''}
+						onChange={handleChange} autoComplete="userEmail" />
 				</FormGroup>
 				<FormGroup>
 					<Button color="primary" type="submit">Save</Button>{' '}

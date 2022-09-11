@@ -46,10 +46,11 @@ const NotificationList = () => {
 
 		return <tr key={notification.id}>
 			<td style={{ whiteSpace: 'nowrap' }}>{notification.userId}</td>
+			<td>{notification.userEmail}</td>
 			<td>{notification.name}</td>
 			<td>{notification.content}</td>
-			<td>{notification.time}</td>
-			<td>{notification.date}</td>
+			<td>{notification.dateTime}</td>
+
 			<td>
 				<ButtonGroup>
 					<Button size="sm" color="primary" tag={Link} to={"/notifications/" + notification.id}>Edit</Button>
@@ -71,10 +72,11 @@ const NotificationList = () => {
 					<thead>
 						<tr>
 							<th>UserId</th>
-							<th>Name</th>
+							<th>Email</th>
+							<th>Subject</th>
 							<th>Content</th>
-							<th>Time</th>
-							<th>Date</th>
+							<th>DateTime</th>
+
 							<th width="10%">Actions</th>
 						</tr>
 					</thead>
