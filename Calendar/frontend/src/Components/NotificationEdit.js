@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Container, Form, FormGroup, Input, Label } from 'reactstrap';
 import AppNavbar from './AppNavbar';
+import { useCookies } from 'react-cookie';
 
 const NotificationEdit = () => {
 	const initialFormState = {
@@ -12,6 +13,8 @@ const NotificationEdit = () => {
 		userEmail: '',
 
 	};
+
+	const [cookies] = useCookies(['XSRF-TOKEN']);
 	const [notification, setNotification] = useState(initialFormState);
 	const navigate = useNavigate();
 	const { id } = useParams();
@@ -45,10 +48,12 @@ const NotificationEdit = () => {
 		await fetch('/api/notification' + (notification.id ? '/' + notification.id : ''), {
 			method: (notification.id) ? 'PUT' : 'POST',
 			headers: {
+				'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
 				'Accept': 'application/json',
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(notification)
+			body: JSON.stringify(notification),
+			credentials: 'include'
 		});
 		setNotification(initialFormState);
 		navigate('/notifications');

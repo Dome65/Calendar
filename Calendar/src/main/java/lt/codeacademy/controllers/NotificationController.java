@@ -2,7 +2,9 @@ package lt.codeacademy.controllers;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.Principal;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -14,7 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import lt.codeacademy.models.Notification;
+import lt.codeacademy.models.User;
 import lt.codeacademy.repositories.NotificationRepo;
+import lt.codeacademy.repositories.UserRepo;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -22,15 +29,17 @@ import lt.codeacademy.repositories.NotificationRepo;
 public class NotificationController {
 
 	private final Logger log = LoggerFactory.getLogger(NotificationController.class);
+	private UserRepo userRepo;
 	private NotificationRepo notificationRepo;
 
-	public NotificationController(NotificationRepo notificationRepo) {
+	public NotificationController(NotificationRepo notificationRepo, UserRepo userRepo) {
 		this.notificationRepo = notificationRepo;
+		this.userRepo = userRepo;
 	}
 
 	@GetMapping("/notifications")
-	Collection<Notification> notifications() {
-		return notificationRepo.findAll();
+	Collection<Notification> notifications(Principal principal) {
+		return notificationRepo.findAllByUserId(principal.getName());
 	}
 
 	@GetMapping("/notification/{id}")
@@ -41,9 +50,17 @@ public class NotificationController {
 	}
 
 	@PostMapping("/notification")
-	ResponseEntity<Notification> createNotification(@Valid @RequestBody Notification notification)
-			throws URISyntaxException {
+	ResponseEntity<Notification> createNotification(@Valid @RequestBody Notification notification,
+			@AuthenticationPrincipal OAuth2User principal) throws URISyntaxException {
 		log.info("Request to create notification: {}", notification);
+		Map<String, Object> details = principal.getAttributes();
+		String userId = details.get("sub").toString();
+
+		// check to see if user already exists
+		Optional<User> user = userRepo.findById(userId);
+		notification.setUser(
+				user.orElse(new User(userId, details.get("name").toString(), details.get("email").toString())));
+
 		Notification result = notificationRepo.save(notification);
 		return ResponseEntity.created(new URI("/api/notification/" + result.getId())).body(result);
 	}

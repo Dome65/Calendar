@@ -3,11 +3,13 @@ import { Button, ButtonGroup, Container, Table } from 'reactstrap';
 import AppNavbar from './AppNavbar';
 import { Link } from 'react-router-dom';
 import axios from "axios";
+import { useCookies } from 'react-cookie';
 
 const NotificationList = () => {
 
 	const [loading, setLoading] = useState(false);
 	const [notifications, setNotifications] = useState([]);
+	const [cookies] = useCookies(['XSRF-TOKEN']);
 
 	const fetchData = () => {
 		const notificationsUrl = '/api/notifications';
@@ -29,9 +31,11 @@ const NotificationList = () => {
 		await fetch(`/api/notification/${id}`, {
 			method: 'DELETE',
 			headers: {
+				'X-XSRF-TOKEN': cookies['XSRF-TOKEN'],
 				'Accept': 'application/json',
 				'Content-Type': 'application/json'
-			}
+			},
+			credentials: 'include'
 		}).then(() => {
 			let updatedNotifications = [...notifications].filter(i => i.id !== id);
 			setNotifications(updatedNotifications);

@@ -1,63 +1,49 @@
 package lt.codeacademy.controllers;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Optional;
-
-import javax.validation.Valid;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import lt.codeacademy.models.User;
-import lt.codeacademy.repositories.UserRepo;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-@RequestMapping(path = "/api")
-@CrossOrigin(origins = "http://localhost:3000/")
 public class UserController {
+	
+	private ClientRegistration registration;
 
-	private final Logger log = LoggerFactory.getLogger(UserController.class);
-	private UserRepo userRepo;
-
-	public UserController(UserRepo userRepo) {
-		this.userRepo = userRepo;
+	public UserController(ClientRegistrationRepository registrations) {
+		this.registration = registrations.findByRegistrationId("okta");
 	}
 
-	@GetMapping("/users")
-	Collection<User> users() {
-		return userRepo.findAll();
+	@GetMapping("/api/user")
+	public ResponseEntity<?> getUser(@AuthenticationPrincipal OAuth2User user) {
+		if (user == null) {
+			return new ResponseEntity<>("", HttpStatus.OK);
+		} else {
+			return ResponseEntity.ok().body(user.getAttributes());
+		}
 	}
 
-	@GetMapping("/user/{id}")
-	ResponseEntity<?> getUser(@PathVariable Long id) {
-		Optional<User> notification = userRepo.findById(id);
-		return notification.map(response -> ResponseEntity.ok().body(response))
-				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-	}
+	@PostMapping("/api/logout")
+	public ResponseEntity<?> logout(HttpServletRequest request,
+			@AuthenticationPrincipal(expression = "idToken") OidcIdToken idToken) {
+		// send logout URL to client so they can initiate logout
+		String logoutUrl = this.registration.getProviderDetails().getConfigurationMetadata().get("end_session_endpoint")
+				.toString();
 
-	@PostMapping("/user")
-	ResponseEntity<User> createUser(@Valid @RequestBody User user) throws URISyntaxException {
-		log.info("Request to create user: {}", user);
-		User result = userRepo.save(user);
-		return ResponseEntity.created(new URI("/api/user/" + result.getId())).body(result);
-	}
-
-	@PutMapping("/user/{id}")
-	ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
-		log.info("Request to update user: {}", user);
-		User result = userRepo.save(user);
-		return ResponseEntity.ok().body(result);
-	}
-
-	@DeleteMapping(value = "/user/{id}")
-	public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
-		log.info("Request to delete user: {}", id);
-		userRepo.deleteById(id);
-		return ResponseEntity.ok().build();
+		Map<String, String> logoutDetails = new HashMap<>();
+		logoutDetails.put("logoutUrl", logoutUrl);
+		logoutDetails.put("idToken", idToken.getTokenValue());
+		request.getSession(false).invalidate();
+		return ResponseEntity.ok().body(logoutDetails);
 	}
 }
